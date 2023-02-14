@@ -1,14 +1,34 @@
 import express from "express"
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const client = new PrismaClient(); // New Client called client 
 const app = express();  // Express application called app
 app.use(express.json()); // app uses json
 
+type UserBody = {
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
 
+}
+
+// sign up
+app.post("/users", async (req,res) => {
+    const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response
+    const passwordHash = await bcrypt.hash(password, 10); // hashed password
+    await client.user.create({data: {
+        firstName,
+        lastName,
+        email,
+        passwordHash,
+    }});
+    res.send(`<h1>User create</h1>`);
+});
 
 app.get("/", (req,res) => {
-    res.json(`<h1>Hello World! </h1>`)
+    res.json(`<h1>Hello World! </h1>`);
     
 });
 
