@@ -23,7 +23,6 @@ app.post('/users', async (req, res) => {
         email,
         passwordHash,
     }});
-
     res.json(`<h1> New User Created </h1>`);
 });
 
@@ -33,4 +32,59 @@ app.get("/", (req,res) => {
 
 app.listen(3000, () => {
     console.log("Server Started");
+});
+
+TODO: "Create Reptile"
+app.post('/createrep', (req,res) => {
+
+});
+
+TODO: "Delete Reptile"
+app.post('/delrep', (req,res) => {
+
+});
+
+TODO: "Update Reptile"
+app.post('/uprep', (req,res) => {
+
+});
+
+TODO: "list all Reptiles"
+app.get('/listrep', (req,res) => {
+
+});
+
+TODO: "Create feeding for Reptile"
+app.post('/feed', (req,res) => {
+
+});
+
+TODO: "List all Feedings for Reptile"
+app.get('/listfeed', (req,res) => {
+
+});
+
+TODO: "Create HusbandryRecords"
+app.post('/crehusrep', (req,res) => {
+
+});
+
+TODO: "List all HusbandryRecords for reptile"
+app.get('/listhusrep', (req,res) => {
+
+});
+
+TODO: " create schedule for reptile"
+app.post('/schrep',(req,res) => {
+
+});
+
+TODO: "list schedule for reptile"
+app.get('/listschrep', (req,res) => {
+
+});
+
+TODO: "list user schedules"
+app.get('/listschuser', (req,res) => {
+
 });
