@@ -28,8 +28,7 @@ app.post('/users', async (req, res) => {
 });
 
 app.get("/", (req,res) => {
-    res.json(`<h1>Hello World! </h1>`);
-    
+    res.json(`<h1>Hello World! </h1>`);   
 });
 
 app.listen(3000, () => {
