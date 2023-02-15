@@ -1,6 +1,8 @@
 import express from "express"
 import { PrismaClient, User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { v4 } from "uuid";
+import cookieParser from "cookie-parser";
 
 const client = new PrismaClient(); // New Client called client 
 const app = express();  // Express application called app
