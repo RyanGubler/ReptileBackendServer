@@ -19,6 +19,15 @@ type UserBody = {
 app.post('/users', async (req, res) => {
     const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response\
     const passwordHash = await bcrypt.hash(password, 10); // hashed password
+    const emailCheck = await client.user.findFirst({
+        where: {
+            email,
+        }
+    });
+    if (emailCheck){
+        res.json(`Email already in use`);
+        return;
+    }
     await client.user.create({ data: {
         firstName,
         lastName,
@@ -27,18 +36,8 @@ app.post('/users', async (req, res) => {
     }});
     res.json(`<h1> New User Created </h1>`);
 });
-
-app.get("/", (req,res) => {
-    res.json(`<h1>Hello World! </h1>`);   
-});
-
-app.listen(3000, () => {
-    console.log("Server Started");
-});
-
 TODO: "Create Reptile"
 app.post('/createrep', (req,res) => {
-
 });
 
 TODO: "Delete Reptile"
@@ -89,4 +88,8 @@ app.get('/listschrep', (req,res) => {
 TODO: "list user schedules"
 app.get('/listschuser', (req,res) => {
 
+});
+
+app.listen(3000, () => {
+    console.log("Server Started");
 });
