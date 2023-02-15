@@ -65,6 +65,7 @@ model Schedule {
   reptileId Int
   user User @relation(fields: [userId], references: [id])
   userId Int
+  type String
   description String
   monday Boolean
   tuesday Boolean
