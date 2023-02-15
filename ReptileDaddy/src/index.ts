@@ -11,20 +11,20 @@ type UserBody = {
     lastName: string,
     email: string,
     password: string
-
 }
 
 // sign up
-app.post("/users", async (req,res) => {
-    const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response
+app.post('/users', async (req, res) => {
+    const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response\
     const passwordHash = await bcrypt.hash(password, 10); // hashed password
-    await client.user.create({data: {
+    await client.user.create({ data: {
         firstName,
         lastName,
         email,
         passwordHash,
     }});
-    res.send(`<h1>User create</h1>`);
+
+    res.json(`<h1> New User Created </h1>`);
 });
 
 app.get("/", (req,res) => {
