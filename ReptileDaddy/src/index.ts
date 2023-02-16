@@ -47,7 +47,6 @@ type Reptile = {
     sex: string,
     userId: number
 }
-
 app.post('/reptile', async (req,res) => {
     const {id,species, name, sex, userId} = req.body as Reptile;
     await client.reptile.create({
@@ -57,7 +56,6 @@ app.post('/reptile', async (req,res) => {
             sex,
             userId,
     }});
-
 });
 
 TODO: "Delete Reptile"
@@ -66,9 +64,8 @@ app.post('/delrep', async (req, res) => {
     await client.reptile.delete({
         where: {
             id,
-        }
-    })
-
+        
+    }});
 });
 
 TODO: "Update Reptile"
