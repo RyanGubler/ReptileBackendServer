@@ -16,10 +16,10 @@ type UserBody = {
 }
 
 // sign up
-app.post('/users', async (req, res) => {
+app.post('/', async (req, res) => {
     const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response\
     const passwordHash = await bcrypt.hash(password, 10); // hashed password
-    const emailCheck = await client.user.findFirst({
+    const emailCheck = await client.user.findFirst({ // check if Email is already in use
         where: {
             email,
         }
@@ -28,7 +28,7 @@ app.post('/users', async (req, res) => {
         res.json(`Email already in use`);
         return;
     }
-    await client.user.create({ data: {
+    await client.user.create({ data: { // create new user
         firstName,
         lastName,
         email,
@@ -36,12 +36,38 @@ app.post('/users', async (req, res) => {
     }});
     res.json(`<h1> New User Created </h1>`);
 });
+
+
 TODO: "Create Reptile"
-app.post('/createrep', (req,res) => {
+
+type Reptile = {
+    id: number,
+    species: string,
+    name: string,
+    sex: string,
+    userId: number
+}
+
+app.post('/reptile', async (req,res) => {
+    const {id,species, name, sex, userId} = req.body as Reptile;
+    await client.reptile.create({
+        data: {
+            species,
+            name,
+            sex,
+            userId,
+    }});
+
 });
 
 TODO: "Delete Reptile"
-app.post('/delrep', (req,res) => {
+app.post('/delrep', async (req, res) => {
+    const {id} = req.body as Reptile;
+    await client.reptile.delete({
+        where: {
+            id,
+        }
+    })
 
 });
 
