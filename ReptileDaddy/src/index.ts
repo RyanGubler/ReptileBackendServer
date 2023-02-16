@@ -1,5 +1,5 @@
-import express from "express"
-import { PrismaClient, User } from "@prisma/client";
+import express, { Request, RequestHandler } from "express"
+import { PrismaClient, Session, User  } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
 import cookieParser from "cookie-parser";
@@ -7,6 +7,10 @@ import cookieParser from "cookie-parser";
 const client = new PrismaClient(); // New Client called client 
 const app = express();  // Express application called app
 app.use(express.json()); // app uses json
+app.use(express.urlencoded({ extended: true}))
+app.use(cookieParser());
+app.use(express.static('public'));
+
 
 type UserBody = {
     firstName: string,
@@ -14,6 +18,67 @@ type UserBody = {
     email: string,
     password: string
 }
+
+TODO: "Login"
+type LoginBody = {
+    email: string,
+    password: string
+}
+
+type RequestWithSession = Request & {
+    session?: Session
+    user?: User
+  }
+
+  const authenticationMiddleware: RequestHandler = async (req: RequestWithSession, res, next) => {
+    const sessionToken = req.cookies["session-token"];
+    if (sessionToken) {
+      const session = await client.session.findFirst({
+        where: {
+          token: sessionToken
+        },
+        include: {
+          user: true
+        }
+      });
+      if (session) {
+        req.session = session;
+        req.user = session.user;
+      }
+    }
+    next();
+  }
+  
+  app.use(authenticationMiddleware);
+
+app.post("/sessions", async (req, res) => {
+    const {email, password} = req.body as LoginBody;
+    const user = await client.user.findFirst({
+        where: {
+            email,
+        }
+    });
+    if(!user){
+        res.status(404).json({ message: "Incorrect email or password"});
+        return;
+    }
+    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+    if(!passwordMatch){
+        res.status(404).json({ message: "Incorrect email or password"})
+        return;
+    }
+    const token = v4();
+    const session = await client.session.create({
+        data: {
+            userId: user.id,
+            token,
+        }
+    })
+    res.cookie("session-token", session.token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60,
+    })
+})
 
 // sign up
 app.post('/', async (req, res) => {
