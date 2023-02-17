@@ -49,7 +49,7 @@ type RequestWithSession = Request & {
     next();
   }
   
-  app.use(authenticationMiddleware);
+app.use(authenticationMiddleware);
 
 app.post("/sessions", async (req, res) => {
     const {email, password} = req.body as LoginBody;
@@ -106,78 +106,86 @@ app.post('/', async (req, res) => {
 TODO: "Create Reptile"
 
 type Reptile = {
-    id: number,
     species: string,
     name: string,
     sex: string,
-    userId: number
 }
 
 app.post('/reptile', async (req,res) => {
-    const {id,species, name, sex, userId} = req.body as Reptile;
+    const {species, name, sex} = req.body as Reptile;
     await client.reptile.create({
         data: {
             species,
             name,
             sex,
-            userId,
+            userId: req.user.id,
     }});
 });
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req, res) => {
-    const {id} = req.body as Reptile;
-
     await client.reptile.delete({
         where: {
-            id,
-            userId,
+            id: req.body.id,
+            userId: req.user.id,
         
     }});
+    // respond with deleted
 });
 
 TODO: "Update Reptile"
-app.post('/uprep', (req,res) => {
-
+app.post('/uprep', async (req,res) => {
+    const {species, name, sex} = req.body as Reptile;
+    const reptile = await client.reptile.findFirst({
+        where: {
+            id: req.body.id,
+            userId: req.user.id,
+    }});
+    res.json({reptile})
 });
 
 TODO: "list all Reptiles"
-app.get('/listrep', (req,res) => {
-
+app.get('/reptile', async (req,res) => {
+    const reptiles = await client.reptile.findMany({
+        where: {
+            userId: req.user.id,
+        }
+    })
+    res.json({reptiles})
 });
+
 
 TODO: "Create feeding for Reptile"
 app.post('/feed', (req,res) => {
-
 });
 
 TODO: "List all Feedings for Reptile"
-app.get('/listfeed', (req,res) => {
+app.get('/feed', (req,res) => {
 
 });
 
 TODO: "Create HusbandryRecords"
-app.post('/crehusrep', (req,res) => {
+app.post('/husbandry', (req,res) => {
 
 });
 
 TODO: "List all HusbandryRecords for reptile"
-app.get('/listhusrep', (req,res) => {
+app.get('/husbandry', (req,res) => {
 
 });
 
 TODO: " create schedule for reptile"
-app.post('/schrep',(req,res) => {
+app.post('/schedulerep',(req,res) => {
 
 });
 
 TODO: "list schedule for reptile"
-app.get('/listschrep', (req,res) => {
+app.get('/schedulerep', (req,res) => {
 
 });
 
 TODO: "list user schedules"
-app.get('/listschuser', (req,res) => {
+app.get('/sceduleuser', (req,res) => {
 
 });
 
