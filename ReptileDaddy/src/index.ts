@@ -112,6 +112,7 @@ type Reptile = {
     sex: string,
     userId: number
 }
+
 app.post('/reptile', async (req,res) => {
     const {id,species, name, sex, userId} = req.body as Reptile;
     await client.reptile.create({
@@ -126,9 +127,11 @@ app.post('/reptile', async (req,res) => {
 TODO: "Delete Reptile"
 app.post('/delrep', async (req, res) => {
     const {id} = req.body as Reptile;
+
     await client.reptile.delete({
         where: {
             id,
+            userId,
         
     }});
 });
