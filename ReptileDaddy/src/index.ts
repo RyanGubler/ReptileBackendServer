@@ -113,19 +113,20 @@ type Reptile = {
     sex: string,
 }
 
-app.post('/reptile', async (req,res) => {
+app.post('/reptile', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
+    const userId = req.user?.id as number;
     await client.reptile.create({
         data: {
             species,
             name,
             sex,
-            userId: req.user.id,
+            userId,
     }});
 });
 
 TODO: "Delete Reptile"
-app.post('/delrep', async (req, res) => {
+app.post('/delrep', async (req: RequestWithSession, res) => {
     await client.reptile.delete({
         where: {
             id: req.body.id,
@@ -136,21 +137,21 @@ app.post('/delrep', async (req, res) => {
 });
 
 TODO: "Update Reptile"
-app.post('/uprep', async (req,res) => {
+app.post('/uprep', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
     const reptile = await client.reptile.findFirst({
         where: {
             id: req.body.id,
-            userId: req.user.id,
+            userId: req.user?.id,
     }});
     res.json({reptile})
 });
 
 TODO: "list all Reptiles"
-app.get('/reptile', async (req,res) => {
+app.get('/reptile', async (req: RequestWithSession,res) => {
     const reptiles = await client.reptile.findMany({
         where: {
-            userId: req.user.id,
+            userId: req.user?.id,
         }
     })
     res.json({reptiles})
