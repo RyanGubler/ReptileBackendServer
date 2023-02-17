@@ -86,6 +86,15 @@ app.post("/sessions", async (req, res) => {
 app.post('/users', async (req, res) => {
     const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response\
     const passwordHash = await bcrypt.hash(password, 10); // hashed password
+    const emailCheck = await client.user.findFirst({
+        where: {
+            email,
+        }
+    });
+    if (emailCheck){
+        res.json(`Email already in use`);
+        return;
+    }
     await client.user.create({ data: {
         firstName,
         lastName,
@@ -94,14 +103,8 @@ app.post('/users', async (req, res) => {
     }});
     res.json(`<h1> New User Created </h1>`);
 });
-
-app.get("/", (req,res) => {
-    res.json(`<h1>Hello World! </h1>`);   
-});
-
 TODO: "Create Reptile"
 app.post('/createrep', (req,res) => {
-
 });
 
 TODO: "Delete Reptile"
