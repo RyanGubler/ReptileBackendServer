@@ -31,11 +31,13 @@ type RequestWithSession = Request & {
   }
 
   const authenticationMiddleware: RequestHandler = async (req: RequestWithSession, res, next) => {
-    const sessionToken = req.cookies["session-token"];
+    
+    const sessionToken = req.cookies["session-token"] as string;
+
     if (sessionToken) {
       const session = await client.session.findFirst({
         where: {
-          token: sessionToken
+          sessionToken,
         },
         include: {
           user: true
@@ -71,7 +73,7 @@ app.post("/sessions", async (req, res) => {
     const session = await client.session.create({
         data: {
             userId: user.id,
-            token,
+            sessionToken: token,
         }
     })
     res.cookie("session-token", session.token, {

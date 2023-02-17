@@ -30,7 +30,6 @@ model Session {
   userId Int
   expires DateTime
   sessionToken String
-  accessToken String
 }
 
 model Reptile {
