@@ -76,7 +76,7 @@ app.post("/sessions", async (req, res) => {
             sessionToken: token,
         }
     })
-    res.cookie("session-token", session.token, {
+    res.cookie("session-token", session.sessionToken, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
     })
