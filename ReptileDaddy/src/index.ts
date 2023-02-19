@@ -51,7 +51,7 @@ type RequestWithSession = Request & {
     next();
   }
   
-  app.use(authenticationMiddleware);
+app.use(authenticationMiddleware);
 
 app.post("/sessions", async (req, res) => {
     const {email, password} = req.body as LoginBody;
@@ -83,10 +83,10 @@ app.post("/sessions", async (req, res) => {
 })
 
 // sign up
-app.post('/users', async (req, res) => {
+app.post('/', async (req, res) => {
     const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response\
     const passwordHash = await bcrypt.hash(password, 10); // hashed password
-    const emailCheck = await client.user.findFirst({
+    const emailCheck = await client.user.findFirst({ // check if Email is already in use
         where: {
             email,
         }
@@ -95,7 +95,7 @@ app.post('/users', async (req, res) => {
         res.json(`Email already in use`);
         return;
     }
-    await client.user.create({ data: {
+    await client.user.create({ data: { // create new user
         firstName,
         lastName,
         email,
@@ -103,24 +103,61 @@ app.post('/users', async (req, res) => {
     }});
     res.json(`<h1> New User Created </h1>`);
 });
+
+
 TODO: "Create Reptile"
-app.post('/createrep', (req,res) => {
+
+type Reptile = {
+    species: string,
+    name: string,
+    sex: string,
+}
+
+app.post('/reptile', async (req: RequestWithSession,res) => {
+    const {species, name, sex} = req.body as Reptile;
+    const userId = req.user?.id as number;
+    await client.reptile.create({
+        data: {
+            species,
+            name,
+            sex,
+            userId,
+    }});
 });
 
 TODO: "Delete Reptile"
-app.post('/delrep', (req,res) => {
-
+app.post('/delrep', async (req: RequestWithSession, res) => {
+    const userId = req.user?.id as number
+    await client.reptile.delete({
+        where: {
+            id: req.body.id,
+            userId,
+        
+    }});
+    // respond with deleted
 });
 
 TODO: "Update Reptile"
-app.post('/uprep', (req,res) => {
-
+app.post('/uprep', async (req: RequestWithSession,res) => {
+    const {species, name, sex} = req.body as Reptile;
+    const reptile = await client.reptile.findFirst({
+        where: {
+            id: req.body.id,
+            userId: req.user?.id,
+    }});
+    res.json({reptile})
 });
 
 TODO: "list all Reptiles"
-app.get('/listrep', (req,res) => {
-
+app.get('/reptile', async (req: RequestWithSession,res) => {
+    const reptiles = await client.reptile.findMany({
+        where: {
+            userId: req.user?.id,
+        }
+    })
+    res.json({reptiles})
 });
+
 
 TODO: "Create feeding for Reptile"
 app.post('/feed', (req,res) => {
@@ -128,32 +165,32 @@ app.post('/feed', (req,res) => {
 });
 
 TODO: "List all Feedings for Reptile"
-app.get('/listfeed', (req,res) => {
+app.get('/feed', (req,res) => {
 
 });
 
 TODO: "Create HusbandryRecords"
-app.post('/crehusrep', (req,res) => {
+app.post('/husbandry', (req,res) => {
 
 });
 
 TODO: "List all HusbandryRecords for reptile"
-app.get('/listhusrep', (req,res) => {
+app.get('/husbandry', (req,res) => {
 
 });
 
 TODO: " create schedule for reptile"
-app.post('/schrep',(req,res) => {
+app.post('/schedulerep',(req,res) => {
 
 });
 
 TODO: "list schedule for reptile"
-app.get('/listschrep', (req,res) => {
+app.get('/schedulerep', (req,res) => {
 
 });
 
 TODO: "list user schedules"
-app.get('/listschuser', (req,res) => {
+app.get('/sceduleuser', (req,res) => {
 
 });
 
