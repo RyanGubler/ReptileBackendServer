@@ -127,7 +127,6 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req: RequestWithSession, res) => {
-    const userId = req.user?.id as number
     await client.reptile.delete({
         where: {
             id: req.body.id,
@@ -144,7 +143,13 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
         where: {
             id: req.body.id,
             userId: req.user?.id,
-    }});
+        },
+        data: {
+            species,
+            name,
+            sex,
+        }
+    });
     res.json({reptile})
 });
 
