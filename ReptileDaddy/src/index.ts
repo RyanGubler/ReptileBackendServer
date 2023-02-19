@@ -127,10 +127,11 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req: RequestWithSession, res) => {
+    const userId = req.user?.id as number
     await client.reptile.delete({
         where: {
             id: req.body.id,
-            userId: req.user.id,
+            userId,
         
     }});
     // respond with deleted
@@ -160,6 +161,7 @@ app.get('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Create feeding for Reptile"
 app.post('/feed', (req,res) => {
+
 });
 
 TODO: "List all Feedings for Reptile"
