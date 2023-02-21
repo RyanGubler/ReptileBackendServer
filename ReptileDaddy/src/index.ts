@@ -248,7 +248,7 @@ app.post('/schedulerep', async (req: RequestWithSession,res) => {
             saturday,
             sunday,
             reptileId: req.body.reptileId,
-            userId: req.user?.id as number,
+            userId: req.user!.id,
     }});
     res.json ({schedule});
 });
@@ -259,7 +259,7 @@ app.get('/schedulerep', async (req: RequestWithSession,res) => {
     const schedules = await client.schedule.findMany({
         where: {
             reptileId: req.body.id,
-            userId: req.user?.id,
+            userId: req.user!.id,
     }});
     res.json({ schedules })
 });
@@ -268,7 +268,7 @@ TODO: "list user schedules"
 app.get('/sceduleuser', async (req: RequestWithSession,res) => {
     const schedules = await client.schedule.findMany({
         where: {
-            userId: req.user?.id,
+            userId: req.user!.id,
     }});
     res.json({schedules});
 });
