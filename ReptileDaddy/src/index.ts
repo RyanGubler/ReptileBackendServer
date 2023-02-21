@@ -132,7 +132,7 @@ app.post('/delrep', async (req: RequestWithSession, res) => {
             userId: req.user!.id,
         
     }});
-    // respond with deleted
+    res.json({message: "Reptile has been deleted."})
 });
 
 TODO: "Update Reptile"
