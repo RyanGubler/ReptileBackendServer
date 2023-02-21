@@ -162,40 +162,115 @@ app.get('/reptile', async (req: RequestWithSession,res) => {
     res.json({reptiles})
 });
 
+type FeedingSchedule = { 
+    reptileId: number,
+    feedingTime: string,
+    foodItem: string,
+}
 
 TODO: "Create feeding for Reptile"
-app.post('/feed', (req,res) => {
-
+app.post('/feed', async (req: RequestWithSession,res) => {
+    const {reptileId, foodItem} = req.body as FeedingSchedule;
+    const feed = await client.feeding.create({
+        data: {
+            reptileId,
+            foodItem,
+        }
+    })
+    res.json({feed})
 });
 
 TODO: "List all Feedings for Reptile"
-app.get('/feed', (req,res) => {
-
+app.get('/feed', async (req: RequestWithSession,res) => {
+    const feedings = await client.feeding.findMany({
+        where: {
+            reptileId: req.body.reptileId,
+        }
+    })
+    res.json({feedings});
 });
-
+type HusbandryRecords = {
+    reptileId: number,
+    weight: number,
+    length: number,
+    temperature: number,
+    humidity: number,
+}
 TODO: "Create HusbandryRecords"
-app.post('/husbandry', (req,res) => {
-
+app.post('/husbandry', async (req: RequestWithSession,res) => {
+    const {reptileId, weight, length, temperature, humidity} = req.body as HusbandryRecords;
+    const husbandry = await client.husbandryRecord.create({
+        data: {
+            reptileId,
+            weight,
+            length,
+            temperature,
+            humidity,
+        }
+    })
+    res.json({husbandry})
 });
 
 TODO: "List all HusbandryRecords for reptile"
-app.get('/husbandry', (req,res) => {
-
+app.get('/husbandry', async (req: RequestWithSession,res) => {
+    const husbandry = await client.husbandryRecord.findMany({
+        where: {
+            reptileId: req.body.reptileId,
+        }
+    })
+    res.json({husbandry});
 });
+
+type Schedule = {
+    type: string,
+    description: string,
+    monday: boolean,
+    tuesday: boolean,
+    wednesday: boolean,
+    thursday: boolean,
+    friday: boolean,
+    saturday: boolean,
+    sunday: boolean,
+}
 
 TODO: " create schedule for reptile"
-app.post('/schedulerep',(req,res) => {
-
+app.post('/schedulerep', async (req: RequestWithSession,res) => {
+    const {type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as Schedule;
+    const schedule = await client.schedule.create({
+        data: {
+            type,
+            description,
+            monday,
+            tuesday,
+            wednesday,
+            thursday,
+            friday,
+            saturday,
+            sunday,
+            reptileId: req.body.reptileId,
+            userId: req.user?.id as number,
+    }});
+    res.json ({schedule});
 });
 
-TODO: "list schedule for reptile"
-app.get('/schedulerep', (req,res) => {
 
+TODO: "list schedule for reptile"
+app.get('/schedulerep', async (req: RequestWithSession,res) => {
+    const schedules = await client.schedule.findMany({
+        where: {
+            reptileId: req.body.id,
+            userId: req.user?.id,
+    }});
+    res.json({ schedules })
 });
 
 TODO: "list user schedules"
-app.get('/sceduleuser', (req,res) => {
-
+app.get('/sceduleuser', async (req: RequestWithSession,res) => {
+    const schedules = await client.schedule.findMany({
+        where: {
+            userId: req.user?.id,
+    }});
+    res.json({schedules});
 });
 
 app.listen(3000, () => {
