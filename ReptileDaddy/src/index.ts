@@ -130,7 +130,7 @@ app.post('/delrep', async (req: RequestWithSession, res) => {
     await client.reptile.delete({
         where: {
             id: req.body.id,
-            userId: req.user?.id,
+            userId: req.user!.id,
         
     }});
     // respond with deleted
@@ -142,7 +142,7 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
     const reptile = await client.reptile.update({
         where: {
             id: req.body.id,
-            userId: req.user?.id,
+            userId: req.user!.id,
         },
         data: {
             species,
