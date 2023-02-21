@@ -115,13 +115,12 @@ type Reptile = {
 
 app.post('/reptile', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
-    const userId = req.user?.id as number;
     await client.reptile.create({
         data: {
             species,
             name,
             sex,
-            userId,
+            userId: req.user!.id,
     }});
 });
 
@@ -157,7 +156,7 @@ TODO: "list all Reptiles"
 app.get('/reptile', async (req: RequestWithSession,res) => {
     const reptiles = await client.reptile.findMany({
         where: {
-            userId: req.user?.id,
+            userId: req.user!.id,
         }
     })
     res.json({reptiles})
