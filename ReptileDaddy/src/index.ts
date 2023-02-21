@@ -163,17 +163,16 @@ app.get('/reptile', async (req: RequestWithSession,res) => {
 });
 
 type FeedingSchedule = { 
-    reptileId: number,
     feedingTime: string,
     foodItem: string,
 }
 
 TODO: "Create feeding for Reptile"
 app.post('/feed', async (req: RequestWithSession,res) => {
-    const {reptileId, foodItem} = req.body as FeedingSchedule;
+    const {foodItem} = req.body as FeedingSchedule;
     const feed = await client.feeding.create({
         data: {
-            reptileId,
+            reptileId: req.body.id,
             foodItem,
         }
     })
@@ -184,7 +183,7 @@ TODO: "List all Feedings for Reptile"
 app.get('/feed', async (req: RequestWithSession,res) => {
     const feedings = await client.feeding.findMany({
         where: {
-            reptileId: req.body.reptileId,
+            reptileId: req.body.id,
         }
     })
     res.json({feedings});
