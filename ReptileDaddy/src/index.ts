@@ -115,34 +115,34 @@ type Reptile = {
 
 app.post('/reptile', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
-    const userId = req.user?.id as number;
     await client.reptile.create({
         data: {
             species,
             name,
             sex,
-            userId,
+            userId: req.user!.id,
     }});
 });
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req: RequestWithSession, res) => {
-    await client.reptile.delete({
+
+    await client.reptile.deleteMany({
         where: {
             id: req.body.id,
-            userId: req.user?.id,
+            userId: req.user!.id,
         
     }});
-    // respond with deleted
+    res.json({message: "Reptile has been deleted."})
 });
 
 TODO: "Update Reptile"
 app.post('/uprep', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
-    const reptile = await client.reptile.update({
+    const reptile = await client.reptile.updateMany({
         where: {
             id: req.body.id,
-            userId: req.user?.id,
+            userId: req.user!.id,
         },
         data: {
             species,
@@ -157,24 +157,23 @@ TODO: "list all Reptiles"
 app.get('/reptile', async (req: RequestWithSession,res) => {
     const reptiles = await client.reptile.findMany({
         where: {
-            userId: req.user?.id,
+            userId: req.user!.id,
         }
     })
     res.json({reptiles})
 });
 
 type FeedingSchedule = { 
-    reptileId: number,
     feedingTime: string,
     foodItem: string,
 }
 
 TODO: "Create feeding for Reptile"
 app.post('/feed', async (req: RequestWithSession,res) => {
-    const {reptileId, foodItem} = req.body as FeedingSchedule;
+    const {foodItem} = req.body as FeedingSchedule;
     const feed = await client.feeding.create({
         data: {
-            reptileId,
+            reptileId: req.body.id,
             foodItem,
         }
     })
@@ -185,7 +184,7 @@ TODO: "List all Feedings for Reptile"
 app.get('/feed', async (req: RequestWithSession,res) => {
     const feedings = await client.feeding.findMany({
         where: {
-            reptileId: req.body.reptileId,
+            reptileId: req.body.id,
         }
     })
     res.json({feedings});
@@ -249,7 +248,7 @@ app.post('/schedulerep', async (req: RequestWithSession,res) => {
             saturday,
             sunday,
             reptileId: req.body.reptileId,
-            userId: req.user?.id as number,
+            userId: req.user!.id,
     }});
     res.json ({schedule});
 });
@@ -260,7 +259,7 @@ app.get('/schedulerep', async (req: RequestWithSession,res) => {
     const schedules = await client.schedule.findMany({
         where: {
             reptileId: req.body.id,
-            userId: req.user?.id,
+            userId: req.user!.id,
     }});
     res.json({ schedules })
 });
@@ -269,7 +268,7 @@ TODO: "list user schedules"
 app.get('/sceduleuser', async (req: RequestWithSession,res) => {
     const schedules = await client.schedule.findMany({
         where: {
-            userId: req.user?.id,
+            userId: req.user!.id,
     }});
     res.json({schedules});
 });
