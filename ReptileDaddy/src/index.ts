@@ -95,14 +95,28 @@ app.post('/', async (req, res) => {
         res.json(`Email already in use`);
         return;
     }
-    await client.user.create({ data: { // create new user
+    const user = await client.user.create({ data: { // create new user
         firstName,
         lastName,
         email,
         passwordHash,
-    }});
-    res.json(`<h1> New User Created </h1>`);
-});
+        sessions: {
+            create: [{
+              sessionToken: v4()
+            }]
+          }
+        },
+        include: {
+          sessions: true
+        }
+      });
+      res.cookie("session-token", user.sessions[0].sessionToken, {
+        httpOnly: true,
+        maxAge: 60000 * 10
+      });
+    
+        res.json(`<h1> New User Created </h1>`);
+    });
 
 
 TODO: "Create Reptile"
