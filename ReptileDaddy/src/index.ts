@@ -126,7 +126,8 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req: RequestWithSession, res) => {
-    await client.reptile.delete({
+
+    await client.reptile.deleteMany({
         where: {
             id: req.body.id,
             userId: req.user!.id,
@@ -138,7 +139,7 @@ app.post('/delrep', async (req: RequestWithSession, res) => {
 TODO: "Update Reptile"
 app.post('/uprep', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
-    const reptile = await client.reptile.update({
+    const reptile = await client.reptile.updateMany({
         where: {
             id: req.body.id,
             userId: req.user!.id,
