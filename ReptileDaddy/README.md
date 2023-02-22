@@ -6,6 +6,8 @@ From here we have a list of post and get requests to make. All urls will start a
 
 To sign up a new user, setup post request and concatenate url with '/' This is our default command. The arguments take firstName, lastName, email, and password. Our program takes a unique email. If email is correctly input, you will receive a message 'New User Created.'
 
+To sign in, setup post request and concatenate url with '/signin'. This takes an email and password as arguments. If either the email or password is incorrect, you'll receive a message that says 'Incorrect email or password' as a response.
+
 To create a reptile, setup post request and concatenate url with '/reptile' which takes the arguments species, name, sex, and will add the reptile to the current user.
 
 To list all reptiles of a user, setup get request and concatenate url with '/reptile' this will display all reptiles of the user.
