@@ -29,6 +29,7 @@ type RequestWithSession = Request & {
     session?: Session
     user?: User
   }
+  
 
   const authenticationMiddleware: RequestHandler = async (req: RequestWithSession, res, next) => {
     
@@ -53,35 +54,39 @@ type RequestWithSession = Request & {
   
 app.use(authenticationMiddleware);
 
-app.post("/sessions", async (req, res) => {
+app.post("/signin",  async (req, res) => {
     const {email, password} = req.body as LoginBody;
     const user = await client.user.findFirst({
-        where: {
-            email,
-        }
+      where: {
+        email,
+      }
     });
-    if(!user){
-        res.status(404).json({ message: "Incorrect email or password"});
-        return;
+    if (!user) {
+      res.status(404).json({ message: "Invalid email or password" });
+      return;
     }
-    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
-    if(!passwordMatch){
-        res.status(404).json({ message: "Incorrect email or password"})
-        return;
+  
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      res.status(404).json({ message: "Invalid email or password" });
+      return;
     }
+  
     const token = v4();
     const session = await client.session.create({
-        data: {
-            userId: user.id,
-            sessionToken: token,
-        }
+      data: {
+        userId: user.id,
+        sessionToken: token,
+      }
     })
+  
     res.cookie("session-token", session.sessionToken, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60,
+      httpOnly: true,
+      maxAge: 60000 * 10
     })
-})
-
+    res.send("<h1>Logged In</h1>")
+  });
+  
 // sign up
 app.post('/', async (req, res) => {
     const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response\
@@ -118,6 +123,7 @@ app.post('/', async (req, res) => {
         res.json(`<h1> New User Created </h1>`);
     });
 
+  
 
 TODO: "Create Reptile"
 
