@@ -158,11 +158,11 @@ app.post('/delrep', async (req: RequestWithSession, res) => {
 });
 
 TODO: "Update Reptile"
-app.post('/uprep', async (req: RequestWithSession,res) => {
+app.post('/uprep/:id', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
     const reptile = await client.reptile.updateMany({
         where: {
-            id: parseInt(req.params!.id as string,10),
+            id: req.body.id,
             userId: req.user!.id,
         },
         data: {
