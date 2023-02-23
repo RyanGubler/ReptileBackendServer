@@ -142,6 +142,7 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
             sex,
             userId: req.user!.id,
     }});
+    res.json({message: "Reptile has been created."})
 });
 
 TODO: "Delete Reptile"
@@ -210,7 +211,6 @@ app.get('/feed', async (req: RequestWithSession,res) => {
     res.json({feedings});
 });
 type HusbandryRecords = {
-    reptileId: number,
     weight: number,
     length: number,
     temperature: number,
@@ -218,10 +218,10 @@ type HusbandryRecords = {
 }
 TODO: "Create HusbandryRecords"
 app.post('/husbandry', async (req: RequestWithSession,res) => {
-    const {reptileId, weight, length, temperature, humidity} = req.body as HusbandryRecords;
+    const {weight, length, temperature, humidity} = req.body as HusbandryRecords;
     const husbandry = await client.husbandryRecord.create({
         data: {
-            reptileId,
+            reptileId: req.body.reptileId,
             weight,
             length,
             temperature,
