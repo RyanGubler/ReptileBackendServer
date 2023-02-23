@@ -135,13 +135,14 @@ type Reptile = {
 
 app.post('/reptile', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
-    await client.reptile.create({
+    const reptile = await client.reptile.create({
         data: {
             species,
             name,
             sex,
             userId: req.user!.id,
     }});
+    res.json({reptile});
 });
 
 TODO: "Delete Reptile"
@@ -161,7 +162,7 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
     const reptile = await client.reptile.updateMany({
         where: {
-            id: req.body.id,
+            id: parseInt(req.params!.id as string,10),
             userId: req.user!.id,
         },
         data: {
