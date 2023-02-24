@@ -148,6 +148,7 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req: RequestWithSession, res) => {
+    console.log(req.query.id)
     await client.reptile.deleteMany({
         where: {
             id: parseInt(req.query.id as string, 10),
@@ -269,10 +270,10 @@ app.post('/schedulerep', async (req: RequestWithSession,res) => {
             friday,
             saturday,
             sunday,
-            reptileId: req.body.reptileId,
-            userId: req.user!.id,
+            reptileId: parseInt(req.query.reptileId as string, 10),
+            userId: req.user!.id
     }});
-    res.json ({schedule});
+    res.json({schedule});
 });
 
 
@@ -280,7 +281,7 @@ TODO: "list schedule for reptile"
 app.get('/schedulerep', async (req: RequestWithSession,res) => {
     const schedules = await client.schedule.findMany({
         where: {
-            reptileId: req.body.id,
+            reptileId: parseInt(req.query.reptileId as string, 10),
             userId: req.user!.id,
     }});
     res.json({ schedules })
