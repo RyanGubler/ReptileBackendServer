@@ -117,7 +117,7 @@ app.post('/', async (req, res) => {
       });
       res.cookie("session-token", user.sessions[0].sessionToken, {
         httpOnly: true,
-        maxAge: 60000 * 10 
+        maxAge: 60000 * 10 * 6 * 24
       });
     
         res.json(`<h1> New User Created </h1>`);
@@ -186,7 +186,6 @@ app.get('/reptile', async (req: RequestWithSession,res) => {
 });
 
 type FeedingSchedule = { 
-    feedingTime: string,
     foodItem: string,
 }
 
@@ -195,7 +194,7 @@ app.post('/feed', async (req: RequestWithSession,res) => {
     const {foodItem} = req.body as FeedingSchedule;
     const feed = await client.feeding.create({
         data: {
-            reptileId: req.body.id,
+            reptileId: parseInt(req.query.id as string, 10),
             foodItem,
         }
     })
@@ -206,13 +205,12 @@ TODO: "List all Feedings for Reptile"
 app.get('/feed', async (req: RequestWithSession,res) => {
     const feedings = await client.feeding.findMany({
         where: {
-            reptileId: req.body.id,
+            reptileId: parseInt(req.query.id as string, 10),
         }
     })
     res.json({feedings});
 });
 type HusbandryRecords = {
-    reptileId: number,
     weight: number,
     length: number,
     temperature: number,
@@ -220,14 +218,15 @@ type HusbandryRecords = {
 }
 TODO: "Create HusbandryRecords"
 app.post('/husbandry', async (req: RequestWithSession,res) => {
-    const {reptileId, weight, length, temperature, humidity} = req.body as HusbandryRecords;
+    const {weight, length, temperature, humidity} = req.body as HusbandryRecords;
     const husbandry = await client.husbandryRecord.create({
         data: {
-            reptileId,
+            reptileId: parseInt(req.query.id as string, 10),
             weight,
             length,
             temperature,
             humidity,
+            
         }
     })
     res.json({husbandry})
@@ -237,7 +236,7 @@ TODO: "List all HusbandryRecords for reptile"
 app.get('/husbandry', async (req: RequestWithSession,res) => {
     const husbandry = await client.husbandryRecord.findMany({
         where: {
-            reptileId: req.body.reptileId,
+            reptileId: parseInt(req.query.id as string, 10),
         }
     })
     res.json({husbandry});
