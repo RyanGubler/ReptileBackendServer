@@ -82,7 +82,7 @@ app.post("/signin",  async (req, res) => {
   
     res.cookie("session-token", session.sessionToken, {
       httpOnly: true,
-      maxAge: 60000 * 10
+      maxAge: 60000 * 10 * 6 * 24
     })
     res.send("<h1>Logged In</h1>")
   });
@@ -117,7 +117,7 @@ app.post('/', async (req, res) => {
       });
       res.cookie("session-token", user.sessions[0].sessionToken, {
         httpOnly: true,
-        maxAge: 60000 * 10
+        maxAge: 60000 * 10 
       });
     
         res.json(`<h1> New User Created </h1>`);
@@ -128,6 +128,7 @@ app.post('/', async (req, res) => {
 TODO: "Create Reptile"
 
 type Reptile = {
+    id: number,
     species: string,
     name: string,
     sex: string,
@@ -147,10 +148,9 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req: RequestWithSession, res) => {
-
     await client.reptile.deleteMany({
         where: {
-            id: req.body.id,
+            id: parseInt(req.query.id as string, 10),
             userId: req.user!.id,
         
     }});
@@ -158,12 +158,13 @@ app.post('/delrep', async (req: RequestWithSession, res) => {
 });
 
 TODO: "Update Reptile"
-app.post('/uprep/:id', async (req: RequestWithSession,res) => {
+app.post('/uprep', async (req: RequestWithSession,res) => {
+    
     const {species, name, sex} = req.body as Reptile;
+
     const reptile = await client.reptile.updateMany({
         where: {
-            id: req.body.id,
-            userId: req.user!.id,
+            id: parseInt(req.query.id as string,10),
         },
         data: {
             species,
