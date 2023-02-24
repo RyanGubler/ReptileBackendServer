@@ -148,6 +148,7 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Delete Reptile"
 app.post('/delrep', async (req: RequestWithSession, res) => {
+    console.log(req.query.id)
     await client.reptile.deleteMany({
         where: {
             id: parseInt(req.query.id as string, 10),
