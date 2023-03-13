@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
+dotenv.config();
 
 const client = new PrismaClient(); // New Client called client 
 const app = express();  // Express application called app
