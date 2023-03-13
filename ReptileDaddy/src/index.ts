@@ -3,6 +3,8 @@ import { PrismaClient, Session, User  } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import cors from "cors";
 
 const client = new PrismaClient(); // New Client called client 
 const app = express();  // Express application called app
@@ -10,6 +12,7 @@ app.use(express.json()); // app uses json
 app.use(express.urlencoded({ extended: true}))
 app.use(cookieParser());
 app.use(express.static('public'));
+app.use(cors());
 
 
 type UserBody = {
