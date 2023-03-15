@@ -124,7 +124,7 @@ app.post('/', async (req, res) => {
         maxAge: 60000 * 10 * 6 * 24
       });
     
-        res.json(`<h1> New User Created </h1>`);
+        res.json({user});
     });
 
   
