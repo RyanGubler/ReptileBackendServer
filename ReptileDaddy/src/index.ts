@@ -291,13 +291,71 @@ app.get('/schedulerep', async (req: RequestWithSession,res) => {
     res.json({ schedules })
 });
 
-TODO: "list user schedules"
-app.get('/scheduleuser', async (req: RequestWithSession,res) => {
-    const schedules = await client.schedule.findMany({
+app.post('/logout', async (req: RequestWithSession, res) => {
+    await client.session.deleteMany({
         where: {
-            userId: req.user!.id,
-    }});
-    res.json({schedules});
+            userId: req.user!.id
+        }
+    });
+    res.status(200).json({message: "Logged Out"});
+});
+
+TODO: "list user schedules"
+app.get('/scheduleuser', async (req: RequestWithSession, res) => {
+    let day = req.query.day;
+    if (day === "monday"){
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId: req.user!.id,
+                monday: true 
+        }});
+        res.json({schedules});
+    }
+    else if (day === "tuesday") {
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId: req.user!.id,
+                tuesday: true 
+        }});
+        res.json({schedules});
+    }else if (day === "wednesday") {
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId: req.user!.id,
+                wednesday: true 
+        }});
+        res.json({schedules});
+    }else if (day === "thursday") {
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId: req.user!.id,
+                thursday: true 
+        }});
+        res.json({schedules});
+    }else if (day === "friday") {
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId: req.user!.id,
+                friday: true 
+        }});
+        res.json({schedules});
+    }else if (day === "saturday") {
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId: req.user!.id,
+                saturday: true 
+        }});
+        res.json({schedules});
+    }else if (day === "sunday") {
+        const schedules = await client.schedule.findMany({
+            where: {
+                userId: req.user!.id,
+                sunday: true 
+        }});
+        res.json({schedules});
+    }else{
+        res.json({message: "No Schedules for Today"});
+    }
 });
 if (process.env.NODE_ENV !== 'production') {
     app.use((req, res, next) => {
