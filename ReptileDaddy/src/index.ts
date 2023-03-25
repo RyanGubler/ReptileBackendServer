@@ -5,10 +5,16 @@ import { v4 } from "uuid";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
+import { engine } from "express-handlebars";
+import path from "path";
 dotenv.config();
-
 const client = new PrismaClient(); // New Client called client 
 const app = express();  // Express application called app
+
+app.engine("hbs", engine({ extname: ".hbs" }));
+app.set("view engine", "hbs");
+app.set("views", path.join(__dirname, "/views"));
+
 app.use(express.json()); // app uses json
 app.use(express.urlencoded({ extended: true}))
 app.use(cookieParser());
@@ -151,11 +157,10 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 });
 
 TODO: "Delete Reptile"
-app.post('/delrep', async (req: RequestWithSession, res) => {
-    console.log(req.query.id)
+app.delete('/delrep', async (req: RequestWithSession, res) => {
     await client.reptile.deleteMany({
         where: {
-            id: parseInt(req.query.id as string, 10),
+            id: req.body.id,
             userId: req.user!.id,
         
     }});
@@ -187,7 +192,7 @@ app.get('/reptile', async (req: RequestWithSession,res) => {
             userId: req.user!.id,
         }
     })
-    res.json({reptiles})
+    res.json({reptiles});
 });
 
 type FeedingSchedule = { 
@@ -231,7 +236,6 @@ app.post('/husbandry', async (req: RequestWithSession,res) => {
             length,
             temperature,
             humidity,
-            
         }
     })
     res.json({husbandry})
@@ -246,7 +250,6 @@ app.get('/husbandry', async (req: RequestWithSession,res) => {
     })
     res.json({husbandry});
 });
-
 type Schedule = {
     type: string,
     description: string,
@@ -278,8 +281,6 @@ app.post('/schedulerep', async (req: RequestWithSession,res) => {
     }});
     res.json({schedule});
 });
-
-
 TODO: "list schedule for reptile"
 app.get('/schedulerep', async (req: RequestWithSession,res) => {
     const schedules = await client.schedule.findMany({
@@ -291,13 +292,48 @@ app.get('/schedulerep', async (req: RequestWithSession,res) => {
 });
 
 TODO: "list user schedules"
-app.get('/sceduleuser', async (req: RequestWithSession,res) => {
+app.get('/scheduleuser', async (req: RequestWithSession,res) => {
     const schedules = await client.schedule.findMany({
         where: {
             userId: req.user!.id,
     }});
     res.json({schedules});
 });
+if (process.env.NODE_ENV !== 'production') {
+    app.use((req, res, next) => {
+      if (req.path.match(/\.\w+$/)) {
+        fetch(`${process.env.ASSET_URL}/${req.path}`).then((response) => {
+          if (response.ok) {
+            res.redirect(response.url);
+          } else {
+            // handle dev problems here
+          }
+        });
+      } else {
+        next();
+      }
+    })
+  } else {
+    app.use("/static", express.static(path.join(__dirname, "static")))
+    // do prod things
+  }
+  
+  
+  app.get("/*", (req, res) => {
+    if (process.env.NODE_ENV === "production") {
+    //   res.render("app", {
+    //     development: false,
+    //     jsUrl: manifest["src/main.tsx"].file,
+    //     cssUrl: manifest["src/main.css"].file
+    //   })
+    } else {
+      res.render("app", {
+        development: true,
+        assetUrl: process.env.ASSET_URL,
+      });
+    }
+  
+  })
 
 app.listen(3000, () => {
     console.log("Server Started");
