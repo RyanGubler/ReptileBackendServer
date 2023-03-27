@@ -357,6 +357,7 @@ app.get('/scheduleuser', async (req: RequestWithSession, res) => {
         res.json({message: "No Schedules for Today"});
     }
 });
+
 if (process.env.NODE_ENV !== 'production') {
     app.use((req, res, next) => {
       if (req.path.match(/\.\w+$/)) {
