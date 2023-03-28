@@ -153,7 +153,7 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
             sex,
             userId: req.user!.id,
     }});
-    res.json({reptile});
+    res.status(200).json({message: "Reptile Created"});
 });
 
 TODO: "Delete Reptile"
