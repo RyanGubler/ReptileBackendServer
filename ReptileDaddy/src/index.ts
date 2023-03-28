@@ -164,7 +164,7 @@ app.delete('/delrep', async (req: RequestWithSession, res) => {
             userId: req.user!.id,
         
     }});
-    res.json({message: "Reptile has been deleted."})
+    res.status(200).json({message: "Reptile has been deleted."})
 });
 
 TODO: "Update Reptile"
@@ -182,7 +182,7 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
             sex,
         }
     });
-    res.json({reptile})
+    res.status(200).json({message: "Reptile Updated"})
 });
 
 TODO: "list all Reptiles"
@@ -208,7 +208,7 @@ app.post('/feed', async (req: RequestWithSession,res) => {
             foodItem,
         }
     })
-    res.json({feed})
+    res.status(200).json({message: "Feeding Created"})
 });
 
 TODO: "List all Feedings for Reptile"
@@ -221,10 +221,10 @@ app.get('/feed', async (req: RequestWithSession,res) => {
     res.json({feedings});
 });
 type HusbandryRecords = {
-    weight: number,
-    length: number,
-    temperature: number,
-    humidity: number,
+    weight: string,
+    length: string,
+    temperature: string,
+    humidity: string,
 }
 TODO: "Create HusbandryRecords"
 app.post('/husbandry', async (req: RequestWithSession,res) => {
@@ -232,13 +232,13 @@ app.post('/husbandry', async (req: RequestWithSession,res) => {
     const husbandry = await client.husbandryRecord.create({
         data: {
             reptileId: parseInt(req.query.id as string, 10),
-            weight,
-            length,
-            temperature,
-            humidity,
+            weight: parseFloat(weight),
+            length: parseFloat(length),
+            temperature: parseFloat(temperature),
+            humidity: parseFloat(humidity)
         }
     })
-    res.json({husbandry})
+    res.status(200).json({message: "Husbandry Created"})
 });
 
 TODO: "List all HusbandryRecords for reptile"
@@ -279,7 +279,7 @@ app.post('/schedulerep', async (req: RequestWithSession,res) => {
             reptileId: parseInt(req.query.reptileId as string, 10),
             userId: req.user!.id
     }});
-    res.json({schedule});
+    res.status(200).json({message: "Schedule Create"});
 });
 TODO: "list schedule for reptile"
 app.get('/schedulerep', async (req: RequestWithSession,res) => {
