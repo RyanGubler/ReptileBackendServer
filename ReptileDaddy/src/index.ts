@@ -182,7 +182,6 @@ app.delete('/delrep', async (req: RequestWithSession, res) => {
 TODO: "Update Reptile"
 app.post('/uprep', async (req: RequestWithSession,res) => {
     const {name, sex, species} = req.body as Reptile;
-    console.log
     if(!req.user){
       res.sendStatus(401);
       return;
@@ -197,6 +196,7 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
             sex,
         }
     });
+    
     res.status(200).json({message: "Reptile Updated"})
     return;
 });
