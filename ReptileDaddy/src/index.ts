@@ -95,6 +95,7 @@ app.post("/signin",  async (req, res) => {
       maxAge: 60000 * 10 * 6 * 24
     })
     res.send("<h1>Logged In</h1>")
+    return;
   });
   
 // sign up
@@ -130,7 +131,8 @@ app.post('/createUser', async (req, res) => {
         maxAge: 60000 * 10 * 6 * 24
       });
     
-        res.json({user});
+        res.status(200);
+        return;
     });
 
   
@@ -158,6 +160,7 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
             userId: req.user!.id,
     }});
     res.status(200).json({message: "Reptile Created"});
+    return;
 });
 
 TODO: "Delete Reptile"
@@ -173,17 +176,18 @@ app.delete('/delrep', async (req: RequestWithSession, res) => {
         
     }});
     res.status(200).json({message: "Reptile has been deleted."})
+    return;
 });
 
 TODO: "Update Reptile"
 app.post('/uprep', async (req: RequestWithSession,res) => {
-    
-    const {species, name, sex} = req.body as Reptile;
+    const {name, sex, species} = req.body as Reptile;
+    console.log
     if(!req.user){
       res.sendStatus(401);
       return;
     }
-    const reptile = await client.reptile.updateMany({
+    await client.reptile.updateMany({
         where: {
             id: parseInt(req.query.id as string,10),
         },
@@ -194,6 +198,7 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
         }
     });
     res.status(200).json({message: "Reptile Updated"})
+    return;
 });
 
 TODO: "list all Reptiles"
@@ -208,6 +213,7 @@ app.get('/reptile', async (req: RequestWithSession,res) => {
         }
     })
     res.json({reptiles});
+    return;
 });
 
 type FeedingSchedule = { 
@@ -228,6 +234,7 @@ app.post('/feed', async (req: RequestWithSession,res) => {
         }
     })
     res.status(200).json({message: "Feeding Created"})
+    return;
 });
 
 TODO: "List all Feedings for Reptile"
@@ -242,6 +249,7 @@ app.get('/feed', async (req: RequestWithSession,res) => {
         }
     })
     res.json({feedings});
+    return;
 });
 type HusbandryRecords = {
     weight: string,
@@ -266,6 +274,7 @@ app.post('/husbandry', async (req: RequestWithSession,res) => {
         }
     })
     res.status(200).json({message: "Husbandry Created"})
+    return;
 });
 
 TODO: "List all HusbandryRecords for reptile"
@@ -280,6 +289,7 @@ app.get('/husbandry', async (req: RequestWithSession,res) => {
         }
     })
     res.json({husbandry});
+    return;
 });
 type Schedule = {
     type: string,
@@ -315,6 +325,7 @@ app.post('/schedulerep', async (req: RequestWithSession,res) => {
             userId: req.user!.id
     }});
     res.status(200).json({message: "Schedule Create"});
+    return;
 });
 TODO: "list schedule for reptile"
 app.get('/schedulerep', async (req: RequestWithSession,res) => {
@@ -337,6 +348,7 @@ app.post('/logout', async (req: RequestWithSession, res) => {
         }
     });
     res.status(200).json({message: "Logged Out"});
+    return;
 });
 
 TODO: "list user schedules"
@@ -399,6 +411,7 @@ app.get('/scheduleuser', async (req: RequestWithSession, res) => {
     }else{
         res.json({message: "No Schedules for Today"});
     }
+    return;
 });
 
 if (process.env.NODE_ENV !== 'production') {
