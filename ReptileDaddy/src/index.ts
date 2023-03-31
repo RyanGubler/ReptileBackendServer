@@ -176,14 +176,13 @@ app.delete('/delrep', async (req: RequestWithSession, res) => {
 });
 
 TODO: "Update Reptile"
-app.post('/uprep', async (req: RequestWithSession,res) => {
-    
-    const {species, name, sex} = req.body as Reptile;
+app.put('/uprep', async (req: RequestWithSession,res) => {
+    const {name, sex, species} = req.body as Reptile;
     if(!req.user){
       res.sendStatus(401);
       return;
     }
-    const reptile = await client.reptile.updateMany({
+    await client.reptile.updateMany({
         where: {
             id: parseInt(req.query.id as string,10),
         },
@@ -193,6 +192,7 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
             sex,
         }
     });
+    
     res.status(200).json({message: "Reptile Updated"})
 });
 
