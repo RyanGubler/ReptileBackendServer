@@ -98,7 +98,7 @@ app.post("/signin",  async (req, res) => {
   });
   
 // sign up
-app.post('/', async (req, res) => {
+app.post('/createUser', async (req, res) => {
     const {firstName, lastName, email, password} = req.body as UserBody; // New user type with info from response\
     const passwordHash = await bcrypt.hash(password, 10); // hashed password
     const emailCheck = await client.user.findFirst({ // check if Email is already in use
@@ -146,6 +146,10 @@ type Reptile = {
 
 app.post('/reptile', async (req: RequestWithSession,res) => {
     const {species, name, sex} = req.body as Reptile;
+    if(!req.user){
+      res.sendStatus(401);
+      return;
+    }
     const reptile = await client.reptile.create({
         data: {
             species,
@@ -158,6 +162,10 @@ app.post('/reptile', async (req: RequestWithSession,res) => {
 
 TODO: "Delete Reptile"
 app.delete('/delrep', async (req: RequestWithSession, res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     await client.reptile.deleteMany({
         where: {
             id: req.body.id,
@@ -171,7 +179,10 @@ TODO: "Update Reptile"
 app.post('/uprep', async (req: RequestWithSession,res) => {
     
     const {species, name, sex} = req.body as Reptile;
-
+    if(!req.user){
+      res.sendStatus(401);
+      return;
+    }
     const reptile = await client.reptile.updateMany({
         where: {
             id: parseInt(req.query.id as string,10),
@@ -187,6 +198,10 @@ app.post('/uprep', async (req: RequestWithSession,res) => {
 
 TODO: "list all Reptiles"
 app.get('/reptile', async (req: RequestWithSession,res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     const reptiles = await client.reptile.findMany({
         where: {
             userId: req.user!.id,
@@ -202,6 +217,10 @@ type FeedingSchedule = {
 TODO: "Create feeding for Reptile"
 app.post('/feed', async (req: RequestWithSession,res) => {
     const {foodItem} = req.body as FeedingSchedule;
+    if(!req.user){
+      res.sendStatus(401);
+      return;
+    }
     const feed = await client.feeding.create({
         data: {
             reptileId: parseInt(req.query.id as string, 10),
@@ -213,6 +232,10 @@ app.post('/feed', async (req: RequestWithSession,res) => {
 
 TODO: "List all Feedings for Reptile"
 app.get('/feed', async (req: RequestWithSession,res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     const feedings = await client.feeding.findMany({
         where: {
             reptileId: parseInt(req.query.id as string, 10),
@@ -228,6 +251,10 @@ type HusbandryRecords = {
 }
 TODO: "Create HusbandryRecords"
 app.post('/husbandry', async (req: RequestWithSession,res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     const {weight, length, temperature, humidity} = req.body as HusbandryRecords;
     const husbandry = await client.husbandryRecord.create({
         data: {
@@ -243,6 +270,10 @@ app.post('/husbandry', async (req: RequestWithSession,res) => {
 
 TODO: "List all HusbandryRecords for reptile"
 app.get('/husbandry', async (req: RequestWithSession,res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     const husbandry = await client.husbandryRecord.findMany({
         where: {
             reptileId: parseInt(req.query.id as string, 10),
@@ -264,6 +295,10 @@ type Schedule = {
 
 TODO: " create schedule for reptile"
 app.post('/schedulerep', async (req: RequestWithSession,res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     const {type, description, monday, tuesday, wednesday, thursday, friday, saturday, sunday} = req.body as Schedule;
     const schedule = await client.schedule.create({
         data: {
@@ -283,6 +318,10 @@ app.post('/schedulerep', async (req: RequestWithSession,res) => {
 });
 TODO: "list schedule for reptile"
 app.get('/schedulerep', async (req: RequestWithSession,res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     const schedules = await client.schedule.findMany({
         where: {
             reptileId: parseInt(req.query.reptileId as string, 10),
@@ -302,6 +341,10 @@ app.post('/logout', async (req: RequestWithSession, res) => {
 
 TODO: "list user schedules"
 app.get('/scheduleuser', async (req: RequestWithSession, res) => {
+  if(!req.user){
+    res.sendStatus(401);
+    return;
+  }
     let day = req.query.day;
     if (day === "monday"){
         const schedules = await client.schedule.findMany({
